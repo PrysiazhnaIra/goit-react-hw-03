@@ -5,7 +5,10 @@ import * as Yup from "yup";
 
 const ContactSchema = Yup.object().shape({
   name: Yup.string()
-    .matches(/^[a-zA-Z]+$/, "Must be only latin letters")
+    .matches(/^[a-zA-Z]+(\s[a-zA-Z]+)?$/, {
+      message: "Name must contain only latin letters and a single space",
+      excludeEmptyString: true,
+    })
     .min(3, "Too Short!")
     .max(50, "Too Long!")
     .required("Required"),
