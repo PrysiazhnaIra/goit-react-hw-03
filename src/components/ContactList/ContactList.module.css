@@ -1,23 +1,25 @@
 .contactList {
-  list-style-type: none;
+  display: grid;
+  flex-wrap: wrap;
+  gap: 1rem;
   padding: 0;
+  list-style: none;
 }
 
-.contactListItem {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
+@media (min-width: 1200px) {
+  .contactList {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
-.deleteButton {
-  background-color: #ff4d4d;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  cursor: pointer;
+@media (min-width: 768px) and (max-width: 1199px) {
+  .contactList {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
-.deleteButton:hover {
-  background-color: #ff0000;
+@media (max-width: 767px) {
+  .contactList {
+    grid-template-columns: 1fr;
+  }
 }

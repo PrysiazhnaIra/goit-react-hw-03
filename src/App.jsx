@@ -12,17 +12,27 @@ const initialContacts = [
 ];
 
 function App() {
-  const handleLogin = (userData) => {
-    console.log(userData);
+  const [contacts, setContacts] = useState(initialContacts);
+  const [filter, setFilter] = useState("");
+
+  const addContact = (contact) => {
+    setContacts([...contacts, contact]);
   };
 
-  const [contacts, setContacts] = useState(initialContacts);
+  const handleFilterChange = (evt) => {
+    setFilter(evt.target.value);
+  };
+
+  const filteredContacts = contacts.filter((contact) =>
+    contact.name.toLowerCase().includes(filter.toLowerCase())
+  );
+
   return (
     <>
       <h1 className="title">Phonebook</h1>
-      <ContactForm onLogin={handleLogin} />
-      <SearchBox />
-      <ContactList contacts={contacts} />
+      <ContactForm addContact={addContact} />
+      <SearchBox value={filter} onChange={handleFilterChange} />
+      <ContactList contacts={filteredContacts} />
     </>
   );
 }

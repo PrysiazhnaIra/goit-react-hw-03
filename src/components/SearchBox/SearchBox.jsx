@@ -1,14 +1,15 @@
 import css from "./SearchBox.module.css";
-import { useState } from "react";
 
-export const SearchBox = () => {
-  const [inputValue, setInputValue] = useState("");
-
+export const SearchBox = ({ value, onChange }) => {
   return (
-    <div>
-      <label></label>
-      <input type="text" />
-      <p>{inputValue}</p>
+    <div className={css.searchBlock}>
+      <p className={css.text}>Find contacts by name</p>
+      <input
+        type="text"
+        value={value}
+        onChange={onChange}
+        className={css.input}
+      />
     </div>
   );
 };
