@@ -1,60 +1,67 @@
 import css from "./ContactForm.module.css";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { useId } from "react";
+import { nanoid } from "nanoid";
 import * as Yup from "yup";
 
-const FeedbackSchema = Yup.object().shape({
-  username: Yup.string()
-    .min(2, "Too Short!")
+const ContactSchema = Yup.object().shape({
+  name: Yup.string()
+    .matches(/^[a-zA-Z]+$/, "Must be only latin letters")
+    .min(3, "Too Short!")
     .max(50, "Too Long!")
     .required("Required"),
-  email: Yup.string().email("Must be a valid email!").required("Required"),
-  message: Yup.string()
-    .min(3, "Too short")
-    .max(256, "Too long")
+  number: Yup.string()
+    .matches(/^[0-9-]+$/, {
+      message: "Must be digits (you can add hyphen (-))",
+      excludeEmptyString: true,
+    })
+    .min(3, "Too Short!")
+    .max(50, "Too Long!")
     .required("Required"),
-  level: Yup.string().oneOf(["good", "neutral", "bad"]).required("Required"),
 });
 
-// const initialValues = {
-//   username: "",
-//   email: "",
-// };
+export const ContactForm = ({ addContact }) => {
+  const handleSubmit = (values, { setSubmitting, resetForm }) => {
+    if (!values.name || !values.number) {
+      return;
+    }
 
-export const ContactForm = () => {
-  // const handleSubmit = (evt) => {
-  //   evt.preventDefault();
-  //   const form = evt.target;
-  //   form.reset();
-  // };
+    const newContact = {
+      id: nanoid(),
+      name: values.name,
+      number: values.number,
+    };
 
-  // const initialValues = {
-  //   username: "",
-  //   email: "",
-  // };
-
-  const handleSubmit = (values, { setSubmitting }) => {
-    console.log(values);
+    addContact(newContact);
     setSubmitting(false);
+    resetForm();
   };
 
   return (
-    <Formik initialValues={{ name: "", tel: "" }} onSubmit={handleSubmit}>
-      <Form onSubmit={handleSubmit} className={css.form}>
-        <label className={css.label} htmlFor="name">
-          Name
-        </label>
-        <input type="text" id="name" className={css.input} />
+    <Formik
+      initialValues={{ name: "", number: "" }}
+      onSubmit={handleSubmit}
+      validationSchema={ContactSchema}
+      validateOnChange={true}
+    >
+      {({ isSubmitting }) => (
+        <Form className={css.form}>
+          <label className={css.label} htmlFor="name">
+            Name
+          </label>
+          <Field type="text" id="name" name="name" className={css.input} />
+          <ErrorMessage name="name" component="div" className={css.error} />
 
-        <label className={css.label} htmlFor="tel">
-          Number
-        </label>
-        <input type="tel" id="tel" className={css.input} />
+          <label className={css.label} htmlFor="number">
+            Number
+          </label>
+          <Field type="tel" id="number" name="number" className={css.input} />
+          <ErrorMessage name="number" component="div" className={css.error} />
 
-        <button type="submit" className={css.btn}>
-          Add contact
-        </button>
-      </Form>
+          <button type="submit" className={css.btn} disabled={isSubmitting}>
+            Add contact
+          </button>
+        </Form>
+      )}
     </Formik>
   );
 };
